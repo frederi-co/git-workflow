@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: deployment-
+  namespace: argo
+spec:
+  serviceAccountName: argo-workflow
+  entrypoint: deployment
+  templates:
+    - name: deployment
+      steps:
+        - - name: prepare-env
+            template: prepare-env
+        - - name: pipediff
+            template: pipediff
+
+    - name: prepare-env
+      container:
+        image: busybox
+        command: [sh, -c]
+        args:
+          - echo "running kube doctor"
+
+    - name: pipediff
+      container:
+        image: busybox
+        command: [sh, -c]
+        args:
+          - echo "running pipediff"
